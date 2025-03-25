@@ -214,6 +214,7 @@ import (
     "github.com/cilium/ebpf/perf"
     "github.com/cilium/ebpf/rlimit"
     "golang.org/x/sys/unix"
+    //bpf "github.com/aquasecurity/libbpfgo"
 )
 
 //go:generate go run github.com/cilium/ebpf/cmd/bpf2go -tags linux bpf bpf.c -- -I/usr/src/linux-headers-6.11.0-17-generic/include
@@ -343,18 +344,20 @@ func main() {
     //    log.Fatalf("failed to set target_family: %v", err)
     //}
 
-	err := objs.bpfVariables.FilterByDport.Set(*remoteports)
-	if err != nil {
-		log.Fatalf("set variables 'remoteports' failed ")
-	}
-	err = objs.bpfVariables.FilterBySport.Set(*localports)
-	if err != nil {
-		log.Fatalf("set variables 'localports' failed ")
-	}
+	//err := objs.bpfVariables.FilterByDport.Set(*remoteports)
+	//if err != nil {
+		//log.Fatalf("set variables 'remoteports' failed ")
+	//}
+	//err = objs.bpfVariables.FilterBySport.Set(*localports)
+	//if err != nil {
+		//log.Fatalf("set variables 'localports' failed ")
+	//}
     // 附加 eBPF 程序
-    rlink, err := link.AttachTracing(link.TracingOptions{
-        Program: objs.bpfPrograms.HandleSetState,
-    })
+
+    rlink, err := link.Tracepoint("sock", "inet_sock_set_state", objs.bpfPrograms.HandleSetState, nil)
+    if err != nil {
+        log.Fatalf("failed to attach bpf program: %v", err)
+    }
     if err != nil {
         log.Fatalf("failed to attach bpf program: %v", err)
     }
