@@ -25,4 +25,4 @@ func main() {
 	go doprint("hi, lei", 20)
 	time.Sleep(2 * time.Second)
 	wg.Wait()
-}*/
+}

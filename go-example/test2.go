@@ -44,4 +44,4 @@ func main() {
 	defer conn.Close()
 	go mustcopy(os.Stdout, conn)
 	mustcopy(conn, os.Stdin)
-}*/
+}
